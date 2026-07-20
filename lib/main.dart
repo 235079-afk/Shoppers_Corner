@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/features/products/presentation/pages/product_details_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/theme/cubit/theme_cubit.dart';
 import 'features/auth/data/repositories/auth_repository_impl.dart';
@@ -75,6 +76,10 @@ class MyApp extends StatelessWidget {
                 '/login': (context) => const LoginScreen(),
                 '/signup': (context) => const SignUpScreen(),
                 '/home': (context) => const HomeScreen(),
+                '/productdetails': (context) {
+                  final product = ModalRoute.of(context)!.settings.arguments;
+                  return ProductDetailsScreen(product: product as dynamic);
+                },
               },
             );
           },
