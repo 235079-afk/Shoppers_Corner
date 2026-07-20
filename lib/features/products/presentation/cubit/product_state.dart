@@ -1,6 +1,6 @@
 import '../../domain/entities/product.dart';
 
-abstract class ProductState {
+sealed class ProductState {
   const ProductState();
 }
 

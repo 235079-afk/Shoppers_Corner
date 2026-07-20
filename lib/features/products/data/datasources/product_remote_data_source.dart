@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import '../../../../core/constants/api_constants.dart';
 import '../models/product_model.dart';
+import '../models/products_response_model.dart';
 
 class ProductRemoteDataSource {
   final Dio _dio;
@@ -10,11 +11,10 @@ class ProductRemoteDataSource {
   Future<List<ProductModel>> fetchProducts() async {
     final response = await _dio.get(ApiConstants.productsUrl);
 
-    final data = response.data as Map<String, dynamic>;
-    final items = data['items'] as List<dynamic>;
+    final responseModel = ProductsResponseModel.fromJson(
+      response.data as Map<String, dynamic>,
+    );
 
-    return items
-        .map((item) => ProductModel.fromJson(item as Map<String, dynamic>))
-        .toList();
+    return responseModel.items;
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/features/products/presentation/pages/product_details_screen.dart';
+import 'package:go_router/go_router.dart';
 import '../../domain/entities/product.dart';
 
 class ProductCard extends StatelessWidget {
@@ -10,11 +10,7 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, 
-        MaterialPageRoute(
-        builder: (_) => ProductDetailsScreen(product: product)
-              ),
-          );
+        context.push('/product-details?id=${product.id}');
       },
       child: Card(
         margin: const EdgeInsets.only(bottom: 12),

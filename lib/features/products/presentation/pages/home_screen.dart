@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/router/route_paths.dart';
 import '../../../../core/widgets/theme_toggle_button.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
@@ -34,7 +36,10 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             tooltip: 'Log out',
             icon: const Icon(Icons.logout),
-            onPressed: () => context.read<AuthCubit>().logout(),
+            onPressed: () {
+              context.read<AuthCubit>().logout();
+              context.go(RoutePaths.login);
+            },
           ),
           const SizedBox(width: 8),
         ],
@@ -56,43 +61,38 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 20),
             BlocBuilder<ProductCubit, ProductState>(
               builder: (context, state) {
-                if (state is ProductInitial || state is ProductLoading) {
-                  return const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 60),
-                    child: Center(child: CircularProgressIndicator()),
-                  );
-                }
-
-                if (state is ProductError) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 40),
-                    child: Center(
-                      child: Column(
-                        children: [
-                          Text(
-                            state.message,
-                            style: const TextStyle(color: Colors.red),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 12),
-                          ElevatedButton(
-                            onPressed: () =>
-                                context.read<ProductCubit>().fetchProducts(),
-                            child: const Text('Retry'),
-                          ),
-                        ],
+                return switch (state) {
+                  ProductInitial() || ProductLoading() => const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 60),
+                      child: Center(child: CircularProgressIndicator()),
+                    ),
+                  ProductError(:final message) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 40),
+                      child: Center(
+                        child: Column(
+                          children: [
+                            Text(
+                              message,
+                              style: const TextStyle(color: Colors.red),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 12),
+                            ElevatedButton(
+                              onPressed: () =>
+                                  context.read<ProductCubit>().fetchProducts(),
+                              child: const Text('Retry'),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  );
-                }
-
-                final products = (state as ProductLoaded).products;
-
-                return Column(
-                  children: [
-                    for (final product in products) ProductCard(product: product),
-                  ],
-                );
+                  ProductLoaded(:final products) => Column(
+                      children: [
+                        for (final product in products)
+                          ProductCard(product: product),
+                      ],
+                    ),
+                };
               },
             ),
           ],

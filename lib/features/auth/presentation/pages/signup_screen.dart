@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/router/route_paths.dart';
 import '../../../../core/widgets/theme_toggle_button.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
@@ -41,7 +43,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
       body: SafeArea(
         child: BlocListener<AuthCubit, AuthState>(
           listener: (context, state) {
-            if (state is AuthError) {
+            if (state is AuthSuccess) {
+              context.go(RoutePaths.home);
+            } else if (state is AuthError) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(state.message),
@@ -130,9 +134,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                 BlocBuilder<AuthCubit, AuthState>(
                   builder: (context, state) {
+                    final isLoading = switch (state) {
+                      AuthLoading() => true,
+                      AuthInitial() || AuthSuccess() || AuthError() => false,
+                    };
+
                     return SignInButton(
                       label: 'Create Account →',
-                      isLoading: state is AuthLoading,
+                      isLoading: isLoading,
                       onPressed: _handleSignUp,
                     );
                   },
@@ -142,9 +151,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                 AuthSwitchText(
                   isLogin: false,
-                  onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/login');
-                  },
+                  onPressed: () => context.go(RoutePaths.login),
                 ),
 
                 const SizedBox(height: 20),

@@ -1,17 +1,18 @@
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/auth_repository.dart';
+import '../models/user_model.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<User> login(String username, String password) async {
     await Future.delayed(const Duration(seconds: 2));
-    return User(_nameFromUsername(username));
+    return UserModel(_nameFromUsername(username));
   }
 
   @override
   Future<User> signUp(String name, String email, String password) async {
     await Future.delayed(const Duration(seconds: 2));
-    return User(name);
+    return UserModel(name);
   }
 
   String _nameFromUsername(String username) {

@@ -1,4 +1,4 @@
-abstract class AuthState {
+sealed class AuthState {
   const AuthState();
 }
 
