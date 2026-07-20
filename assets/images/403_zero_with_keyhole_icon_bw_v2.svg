@@ -1,0 +1,12 @@
+<svg width="100%" viewBox="0 0 680 359.78" xmlns="http://www.w3.org/2000/svg" role="img" style="">
+<title style="fill:rgb(0, 0, 0);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">Black and white icon of the number 403 where the zero is a pill shape with a keyhole cut through it, sized to match the other digits</title>
+<desc style="fill:rgb(0, 0, 0);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">A flat monochrome icon showing the digits four, zero, three at matching heights, where the zero is a solid rounded pill shape with a keyhole-shaped hole cut out of its center.</desc>
+<mask id="keyholeCut2" maskUnits="userSpaceOnUse">
+<rect x="280" y="90" width="120" height="215" fill="white"/>
+<circle cx="340" cy="155" r="26" fill="black"/>
+<polygon points="315,181 365,181 340,245" fill="black"/>
+</mask>
+<text x="145" y="295" text-anchor="middle" font-family="Verdana, Arial, sans-serif" font-weight="700" font-size="260" fill="var(--text-primary)" style="fill:rgb(11, 11, 11);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Verdana, Arial, sans-serif;font-size:260px;font-weight:700;text-anchor:middle;dominant-baseline:auto">4</text>
+<rect x="290" y="100" width="100" height="195" rx="50" ry="50" fill="var(--text-primary)" mask="url(#keyholeCut2)" style="fill:rgb(11, 11, 11);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+<text x="535" y="295" text-anchor="middle" font-family="Verdana, Arial, sans-serif" font-weight="700" font-size="260" fill="var(--text-primary)" style="fill:rgb(11, 11, 11);stroke:none;color:rgb(11, 11, 11);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Verdana, Arial, sans-serif;font-size:260px;font-weight:700;text-anchor:middle;dominant-baseline:auto">3</text>
+</svg>
