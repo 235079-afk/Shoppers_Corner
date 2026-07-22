@@ -1,3 +1,4 @@
+import 'package:flutter_app/features/auth/presentation/pages/otp_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -98,6 +99,15 @@ GoRouter buildAppRouter() {
           );
         },
       ),
+      GoRoute(
+      path: '/otp',
+      builder: (context, state) {
+        final email = state.uri.queryParameters['email'] ?? '';
+        return OtpScreen(email: email);
+      }
+      )
     ],
+    
   );
+  
 }

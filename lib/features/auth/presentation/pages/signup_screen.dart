@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -12,6 +14,7 @@ import '../widgets/sign_in_button.dart';
 import '../widgets/or_divider.dart';
 import '../widgets/auth_switch_text.dart';
 import '../widgets/welcome_text.dart';
+import 'package:http/http.dart' as http;
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -26,16 +29,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _passwordController = TextEditingController();
   bool _obscurePassword = true;
 
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
+    Future<void> handleSignUp() async {
+  final email = _emailController.text.trim();
+
+  if (email.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Email cannot be empty")),
+    );
+    return;
+  }
+
+  final sent = await sendOtp(email);
+
+  if (!mounted) return;
+
+  if (sent) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("OTP sent to your email")),
+    );
+
+    context.go('/otp?email=${Uri.encodeComponent(email)}');
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Failed to send OTP")),
+    );
+  }
+}
+     
     return Scaffold(
       appBar: AppBar(
         actions: const [ThemeToggleButton(), SizedBox(width: 8)],
@@ -140,11 +163,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     };
 
                     return SignInButton(
-                      label: 'Create Account →',
+                      label: 'Sign Up & Send OTP →',
                       isLoading: isLoading,
-                      onPressed: _handleSignUp,
-                    );
-                  },
+                      onPressed: handleSignUp,    
+                       )  ;             
+                       },
                 ),
 
                 const SizedBox(height: 24),
@@ -161,19 +184,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
     );
+    
   }
+Future<bool> sendOtp(String email) async {
+  final url = Uri.parse(
+    "https://accessories-eshop.runasp.net/api/auth/send-email-verification",
+  );
 
+  final response = await http.post(
+    url,
+    headers: {"Content-Type": "application/json"},
+    body: jsonEncode({"email": email}),
+  );
+
+  if (response.statusCode == 200) {
+    return true;
+  } else {
+    print("Send OTP failed: ${response.body}");
+    return false;
+  }
+}
   void _handleSocialSignUp(String provider) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('$provider sign up clicked')),
     );
   }
-
-  void _handleSignUp() {
-    context.read<AuthCubit>().signUp(
-          _nameController.text.trim(),
-          _emailController.text.trim(),
-          _passwordController.text.trim(),
-        );
-  }
+  
 }
+
