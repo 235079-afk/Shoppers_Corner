@@ -9,11 +9,12 @@ class ProductCubit extends Cubit<ProductState> {
 
   Future<void> fetchProducts() async {
     emit(const ProductLoading());
-    try {
-      final products = await _getProductsUseCase();
-      emit(ProductLoaded(products));
-    } catch (e) {
-      emit(const ProductError('Could not load products. Pull down to retry.'));
-    }
+
+    final result = await _getProductsUseCase();
+
+    result.fold(
+      (failure) => emit(ProductError(failure.message)),
+      (products) => emit(ProductLoaded(products)),
+    );
   }
 }

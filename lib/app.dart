@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
-import 'core/di/app_dependencies.dart';
+import 'core/di/injection_container.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/cubit/theme_cubit.dart';
 
 class MyApp extends StatelessWidget {
-  final AppDependencies dependencies;
-
-  const MyApp({super.key, required this.dependencies});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ThemeCubit>.value(
-      value: dependencies.themeCubit,
+      value: getIt<ThemeCubit>(),
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder: (context, themeMode) {
           return MaterialApp.router(
@@ -22,7 +21,7 @@ class MyApp extends StatelessWidget {
             theme: AppTheme.light,
             darkTheme: AppTheme.dark,
             themeMode: themeMode,
-            routerConfig: dependencies.router,
+            routerConfig: getIt<GoRouter>(),
           );
         },
       ),
