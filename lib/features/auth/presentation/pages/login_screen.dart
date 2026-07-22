@@ -22,13 +22,13 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _userController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _obscurePassword = true;
 
   @override
   void dispose() {
-    _userController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -103,8 +103,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 24),
 
                 CustomTextField(
-                  controller: _userController,
-                  label: 'Username',
+                  controller: _emailController,
+                  label: 'Email',
                 ),
 
                 const SizedBox(height: 16),
@@ -171,7 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _handleSignIn() {
     context.read<AuthCubit>().login(
-          _userController.text.trim(),
+          _emailController.text.trim(),
           _passwordController.text.trim(),
         );
   }

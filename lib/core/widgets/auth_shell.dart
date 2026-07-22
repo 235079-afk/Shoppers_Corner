@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class AuthShell extends StatelessWidget {
@@ -7,5 +7,9 @@ class AuthShell extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
 
   @override
-  Widget build(BuildContext context) => navigationShell;
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: navigationShell,
+    );
+  }
 }

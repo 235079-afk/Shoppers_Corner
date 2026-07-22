@@ -1,9 +1,10 @@
 import 'dart:convert';
-
+import 'package:http/http.dart' as http;
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:go_router/go_router.dart';
+
 import '../../../../core/router/route_paths.dart';
 import '../../../../core/widgets/theme_toggle_button.dart';
 import '../cubit/auth_cubit.dart';
@@ -14,7 +15,6 @@ import '../widgets/sign_in_button.dart';
 import '../widgets/or_divider.dart';
 import '../widgets/auth_switch_text.dart';
 import '../widgets/welcome_text.dart';
-import 'package:http/http.dart' as http;
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -24,41 +24,72 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
   bool _obscurePassword = true;
 
+  String? _statusMessage; 
+
+  Future<bool> registerUser({
+    required String email,
+    required String password,
+    required String firstName,
+    required String lastName,
+  }) async {
+    final url = Uri.parse(
+      "https://accessories-eshop.runasp.net/api/auth/register",
+    );
+
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        "email": email,
+        "password": password,
+        "confirmPassword": password,
+        "firstName": firstName,
+        "lastName": lastName,
+      }),
+    );
+
+    print("STATUS: ${response.statusCode}");
+    print("BODY: ${response.body}");
+
+    return response.statusCode == 200;
+  }
+
+  Future<void> handleSignUp() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    final firstName = _firstNameController.text.trim();
+    final lastName = _lastNameController.text.trim();
+
+    final success = await registerUser(
+      email: email,
+      password: password,
+      firstName: firstName,
+      lastName: lastName,
+    );
+
+    if (!mounted) return;
+
+    if (success) {
+      setState(() {
+        _statusMessage = "OTP sent to your email.";
+      });
+
+      context.go('/otp?email=${Uri.encodeComponent(email)}');
+    } else {
+      setState(() {
+        _statusMessage = "Registration failed.";
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    Future<void> handleSignUp() async {
-  final email = _emailController.text.trim();
-
-  if (email.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Email cannot be empty")),
-    );
-    return;
-  }
-
-  final sent = await sendOtp(email);
-
-  if (!mounted) return;
-
-  if (sent) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("OTP sent to your email")),
-    );
-
-    context.go('/otp?email=${Uri.encodeComponent(email)}');
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Failed to send OTP")),
-    );
-  }
-}
-     
     return Scaffold(
       appBar: AppBar(
         actions: const [ThemeToggleButton(), SizedBox(width: 8)],
@@ -69,12 +100,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
             if (state is AuthSuccess) {
               context.go(RoutePaths.home);
             } else if (state is AuthError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message),
-                  backgroundColor: Colors.red,
-                ),
-              );
+              setState(() {
+                _statusMessage = state.message;
+              });
             }
           },
           child: SingleChildScrollView(
@@ -96,9 +124,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
 
                 const SizedBox(height: 8),
-
                 const WelcomeText(text: 'Create your account'),
-
                 const SizedBox(height: 40),
 
                 SocialLoginButton(
@@ -108,6 +134,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   onPressed: () => _handleSocialSignUp('Google'),
                 ),
                 const SizedBox(height: 12),
+
                 SocialLoginButton(
                   icon: Icons.apple,
                   label: 'Sign up with Apple',
@@ -115,6 +142,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   onPressed: () => _handleSocialSignUp('Apple'),
                 ),
                 const SizedBox(height: 12),
+
                 SocialLoginButton(
                   icon: Icons.facebook,
                   label: 'Sign up with Facebook',
@@ -127,11 +155,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(height: 24),
 
                 CustomTextField(
-                  controller: _nameController,
-                  label: 'Full Name',
+                  controller: _firstNameController,
+                  label: 'First Name',
                   keyboardType: TextInputType.name,
                 ),
+                const SizedBox(height: 16),
 
+                CustomTextField(
+                  controller: _lastNameController,
+                  label: 'Last Name',
+                  keyboardType: TextInputType.name,
+                ),
                 const SizedBox(height: 16),
 
                 CustomTextField(
@@ -139,7 +173,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   label: 'Email Address',
                   keyboardType: TextInputType.emailAddress,
                 ),
-
                 const SizedBox(height: 16),
 
                 CustomTextField(
@@ -155,6 +188,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                 const SizedBox(height: 24),
 
+                if (_statusMessage != null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: Text(
+                      _statusMessage!,
+                      style: TextStyle(
+                        color: Colors.red.shade400,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+
                 BlocBuilder<AuthCubit, AuthState>(
                   builder: (context, state) {
                     final isLoading = switch (state) {
@@ -165,9 +210,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     return SignInButton(
                       label: 'Sign Up & Send OTP →',
                       isLoading: isLoading,
-                      onPressed: handleSignUp,    
-                       )  ;             
-                       },
+                      onPressed: handleSignUp,
+                    );
+                  },
                 ),
 
                 const SizedBox(height: 24),
@@ -184,31 +229,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
     );
-    
   }
-Future<bool> sendOtp(String email) async {
-  final url = Uri.parse(
-    "https://accessories-eshop.runasp.net/api/auth/send-email-verification",
-  );
 
-  final response = await http.post(
-    url,
-    headers: {"Content-Type": "application/json"},
-    body: jsonEncode({"email": email}),
-  );
-
-  if (response.statusCode == 200) {
-    return true;
-  } else {
-    print("Send OTP failed: ${response.body}");
-    return false;
-  }
-}
   void _handleSocialSignUp(String provider) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('$provider sign up clicked')),
-    );
+    setState(() {
+      _statusMessage = "$provider sign up clicked";
+    });
   }
-  
 }
-
