@@ -107,7 +107,6 @@ class DioConsumer implements ApiConsumer {
       case DioExceptionType.unknown:
         return ServerFailure(error.message ?? 'Something went wrong');
       case DioExceptionType.transformTimeout:
-        // TODO: Handle this case.
         throw UnimplementedError();
     }
   }
