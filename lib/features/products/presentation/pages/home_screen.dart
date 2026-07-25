@@ -88,12 +88,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ),
-                  ProductLoaded(:final products) => Column(
-                      children: [
-                        for (final product in products)
-                          ProductCard(product: product),
-                      ],
+                  ProductLoaded(:final products) => ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: products.length,
+                      itemBuilder: (context, index) =>
+                          ProductCard(product: products[index]),
                     ),
+                  _ => const SizedBox.shrink(),
                 };
               },
             ),

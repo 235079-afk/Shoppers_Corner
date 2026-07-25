@@ -40,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
         actions: const [ThemeToggleButton(), SizedBox(width: 8)],
       ),
       body: SafeArea(
-        child: BlocListener<AuthCubit, AuthState>(
+        child: BlocConsumer<AuthCubit, AuthState>(
           listener: (context, state) {
             if (state is AuthSuccess) {
               context.go(RoutePaths.home);
@@ -53,126 +53,115 @@ class _LoginScreenState extends State<LoginScreen> {
               );
             }
           },
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 8),
+          builder: (context, state) {
+            final isLoading = state is AuthLoading;
 
-                SvgPicture.asset(
-                  'assets/images/shopping_bag_outline_icon.svg',
-                  width: 100,
-                  height: 100,
-                  fit: BoxFit.contain,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).colorScheme.onSurface,
-                    BlendMode.srcIn,
+            return SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 8),
+
+                  SvgPicture.asset(
+                    'assets/images/shopping_bag_outline_icon.svg',
+                    width: 100,
+                    height: 100,
+                    fit: BoxFit.contain,
+                    colorFilter: ColorFilter.mode(
+                      Theme.of(context).colorScheme.onSurface,
+                      BlendMode.srcIn,
+                    ),
                   ),
-                ),
 
-                const SizedBox(height: 8),
+                  const SizedBox(height: 8),
 
-                const WelcomeText(text: 'Welcome Back, Shopper'),
+                  const WelcomeText(text: 'Welcome Back, Shopper'),
 
-                const SizedBox(height: 40),
+                  const SizedBox(height: 40),
 
-                SocialLoginButton(
-                  icon: Icons.g_mobiledata,
-                  label: 'Login with Google',
-                  iconColor: Colors.black,
-                  onPressed: () => _handleSocialLogin('Google'),
-                ),
-                const SizedBox(height: 12),
-                SocialLoginButton(
-                  icon: Icons.apple,
-                  label: 'Login with Apple',
-                  iconColor: Colors.black,
-                  onPressed: () => _handleSocialLogin('Apple'),
-                ),
-                const SizedBox(height: 12),
-                SocialLoginButton(
-                  icon: Icons.facebook,
-                  label: 'Login with Facebook',
-                  iconColor: Colors.black,
-                  onPressed: () => _handleSocialLogin('Facebook'),
-                ),
+                  SocialLoginButton(
+                    icon: Icons.g_mobiledata,
+                    label: 'Login with Google',
+                    iconColor: Colors.black,
+                    onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Google login clicked')),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  SocialLoginButton(
+                    icon: Icons.apple,
+                    label: 'Login with Apple',
+                    iconColor: Colors.black,
+                    onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Apple login clicked')),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  SocialLoginButton(
+                    icon: Icons.facebook,
+                    label: 'Login with Facebook',
+                    iconColor: Colors.black,
+                    onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Facebook login clicked')),
+                    ),
+                  ),
 
-                const SizedBox(height: 24),
-                const OrDivider(),
-                const SizedBox(height: 24),
+                  const SizedBox(height: 24),
+                  const OrDivider(),
+                  const SizedBox(height: 24),
 
-                CustomTextField(
-                  controller: _emailController,
-                  label: 'Email',
-                ),
+                  CustomTextField(
+                    controller: _emailController,
+                    label: 'Email',
+                  ),
 
-                const SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
-                CustomTextField(
-                  controller: _passwordController,
-                  label: 'Password',
-                  obscureText: _obscurePassword,
-                  onToggleVisibility: () {
-                    setState(() {
-                      _obscurePassword = !_obscurePassword;
-                    });
-                  },
-                ),
+                  CustomTextField(
+                    controller: _passwordController,
+                    label: 'Password',
+                    obscureText: _obscurePassword,
+                    onToggleVisibility: () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                    },
+                  ),
 
-                const SizedBox(height: 12),
+                  const SizedBox(height: 12),
 
-                ForgotPasswordLink(onPressed: _handleForgotPassword),
+                  ForgotPasswordLink(
+                    onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Forgot password clicked')),
+                    ),
+                  ),
 
-                const SizedBox(height: 24),
+                  const SizedBox(height: 24),
 
-                BlocBuilder<AuthCubit, AuthState>(
-                  builder: (context, state) {
-                    final isLoading = switch (state) {
-                      AuthLoading() => true,
-                      AuthInitial() || AuthSuccess() || AuthError() => false,
-                    };
+                  SignInButton(
+                    label: 'Sign In →',
+                    isLoading: isLoading,
+                    onPressed: () => context.read<AuthCubit>().login(
+                          _emailController.text.trim(),
+                          _passwordController.text.trim(),
+                        ),
+                  ),
 
-                    return SignInButton(
-                      label: 'Sign In →',
-                      isLoading: isLoading,
-                      onPressed: _handleSignIn,
-                    );
-                  },
-                ),
+                  const SizedBox(height: 24),
 
-                const SizedBox(height: 24),
+                  AuthSwitchText(
+                    isLogin: true,
+                    onPressed: () => context.pushReplacement(RoutePaths.signup),
+                  ),
 
-                AuthSwitchText(
-                  isLogin: true,
-                  onPressed: () => context.go(RoutePaths.signup),
-                ),
-
-                const SizedBox(height: 20),
-              ],
-            ),
-          ),
+                  const SizedBox(height: 20),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );
-  }
-
-  void _handleSocialLogin(String provider) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('$provider login clicked')),
-    );
-  }
-
-  void _handleForgotPassword() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Forgot password clicked')),
-    );
-  }
-
-  void _handleSignIn() {
-    context.read<AuthCubit>().login(
-          _emailController.text.trim(),
-          _passwordController.text.trim(),
-        );
   }
 }

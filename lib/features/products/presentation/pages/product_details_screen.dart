@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_app/features/products/domain/entities/product.dart';
 
-import '../cubit/product_details_cubit.dart';
-import '../cubit/product_details_state.dart';
+import '../cubit/product_cubit.dart';
+import '../cubit/product_state.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   final String productId;
@@ -18,7 +18,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<ProductDetailsCubit>().fetchProductDetails(widget.productId);
+    context.read<ProductCubit>().fetchProductDetails(widget.productId);
   }
 
   @override
@@ -28,10 +28,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         title: const Text('Product Details'),
         elevation: 0,
       ),
-      body: BlocBuilder<ProductDetailsCubit, ProductDetailsState>(
+      body: BlocBuilder<ProductCubit, ProductState>(
         builder: (context, state) {
           return switch (state) {
-            ProductDetailsInitial() || ProductDetailsLoading() => const Center(
+            ProductInitial() || ProductDetailsLoading() => const Center(
                 child: CircularProgressIndicator(),
               ),
             ProductDetailsError(:final message) => Center(
@@ -46,7 +46,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     const SizedBox(height: 12),
                     ElevatedButton(
                       onPressed: () => context
-                          .read<ProductDetailsCubit>()
+                          .read<ProductCubit>()
                           .fetchProductDetails(widget.productId),
                       child: const Text('Retry'),
                     ),
@@ -55,6 +55,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               ),
             ProductDetailsLoaded(:final product) =>
               _ProductDetailsBody(product: product),
+            _ => const SizedBox.shrink(),
           };
         },
       ),

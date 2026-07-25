@@ -21,3 +21,17 @@ class ProductError extends ProductState {
   final String message;
   const ProductError(this.message);
 }
+
+class ProductDetailsLoading extends ProductState {
+  const ProductDetailsLoading();
+}
+
+class ProductDetailsLoaded extends ProductState {
+  final Product product;
+  const ProductDetailsLoaded(this.product);
+}
+
+class ProductDetailsError extends ProductState {
+  final String message;
+  const ProductDetailsError(this.message);
+}

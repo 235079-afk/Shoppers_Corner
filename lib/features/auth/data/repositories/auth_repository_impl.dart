@@ -10,45 +10,59 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<User> login(String email, String password) async {
-
     final url = Uri.parse("$baseUrl/login");
 
     final response = await http.post(
       url,
       headers: {"Content-Type": "application/json"},
-      body: jsonEncode({
-        "email": email,
-        "password": password,
-      }),
+      body: jsonEncode({"email": email, "password": password}),
     );
 
     if (response.statusCode == 200) {
-      final json = jsonDecode(response.body);
-      return UserModel.fromJson(json);
+      return UserModel.fromJson(jsonDecode(response.body));
     } else {
       throw Exception("Login failed: ${response.body}");
     }
   }
 
   @override
-  Future<User> signUp(String name, String email, String password) async {
-    final url = Uri.parse("$baseUrl/signup");
+  Future<void> signUp({
+    required String firstName,
+    required String lastName,
+    required String email,
+    required String password,
+  }) async {
+    final url = Uri.parse("$baseUrl/register");
 
     final response = await http.post(
       url,
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({
-        "name": name,
         "email": email,
         "password": password,
+        "confirmPassword": password,
+        "firstName": firstName,
+        "lastName": lastName,
       }),
     );
 
-    if (response.statusCode == 200) {
-      final json = jsonDecode(response.body);
-      return UserModel.fromJson(json);
-    } else {
-      throw Exception("Signup failed: ${response.body}");
+    if (response.statusCode != 200) {
+      throw Exception("Registration failed: ${response.body}");
+    }
+  }
+
+  @override
+  Future<void> verifyOtp(String email, String otp) async {
+    final url = Uri.parse("$baseUrl/verify-email");
+
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({"email": email, "otp": otp}),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception("Invalid OTP. Please try again.");
     }
   }
 }
