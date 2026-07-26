@@ -20,12 +20,12 @@ class AuthCubit extends Cubit<AuthState> {
 
     emit(const AuthLoading());
 
-    try {
-      final user = await _loginUseCase(email, password);
-      emit(AuthSuccess(user.name));
-    } catch (e) {
-      emit(AuthError(e.toString()));
-    }
+    final result = await _loginUseCase(email, password);
+
+    result.fold(
+      (failure) => emit(AuthError(failure.message)),
+      (user) => emit(AuthSuccess(user.name)),
+    );
   }
 
   Future<void> signUp({
@@ -44,28 +44,28 @@ class AuthCubit extends Cubit<AuthState> {
 
     emit(const AuthLoading());
 
-    try {
-      await _signUpUseCase(
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        password: password,
-      );
-      emit(AuthOtpRequired(email));
-    } catch (e) {
-      emit(const AuthError('Registration failed.'));
-    }
+    final result = await _signUpUseCase(
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      password: password,
+    );
+
+    result.fold(
+      (failure) => emit(AuthError(failure.message)),
+      (_) => emit(AuthOtpRequired(email)),
+    );
   }
 
   Future<void> verifyOtp(String email, String otp) async {
     emit(const AuthLoading());
 
-    try {
-      await _verifyOtpUseCase(email, otp);
-      emit(const AuthOtpVerified());
-    } catch (e) {
-      emit(const AuthError('Invalid OTP. Please try again.'));
-    }
+    final result = await _verifyOtpUseCase(email, otp);
+
+    result.fold(
+      (failure) => emit(AuthError(failure.message)),
+      (_) => emit(const AuthOtpVerified()),
+    );
   }
 
   void logout() {

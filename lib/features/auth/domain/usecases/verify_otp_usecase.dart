@@ -1,3 +1,6 @@
+import 'package:flutter_app/core/error/failures.dart';
+import 'package:fpdart/fpdart.dart';
+
 import '../repositories/auth_repository.dart';
 
 class VerifyOtpUseCase {
@@ -5,7 +8,7 @@ class VerifyOtpUseCase {
 
   VerifyOtpUseCase(this.repository);
 
-  Future<void> call(String email, String otp) {
+  Future<Either<Failure, Unit>> call(String email, String otp) {
     return repository.verifyOtp(email, otp);
   }
 }

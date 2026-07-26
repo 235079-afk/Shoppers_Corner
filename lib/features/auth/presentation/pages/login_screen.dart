@@ -13,7 +13,6 @@ import '../widgets/or_divider.dart';
 import '../widgets/auth_switch_text.dart';
 import '../widgets/forgot_password_link.dart';
 import '../widgets/welcome_text.dart';
-
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -43,7 +42,9 @@ class _LoginScreenState extends State<LoginScreen> {
         child: BlocConsumer<AuthCubit, AuthState>(
           listener: (context, state) {
             if (state is AuthSuccess) {
-              context.go(RoutePaths.home);
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                context.go(RoutePaths.home);
+              });
             } else if (state is AuthError) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
@@ -62,7 +63,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: 8),
-
                   SvgPicture.asset(
                     'assets/images/shopping_bag_outline_icon.svg',
                     width: 100,
@@ -73,13 +73,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       BlendMode.srcIn,
                     ),
                   ),
-
                   const SizedBox(height: 8),
-
                   const WelcomeText(text: 'Welcome Back, Shopper'),
-
                   const SizedBox(height: 40),
-
                   SocialLoginButton(
                     icon: Icons.g_mobiledata,
                     label: 'Login with Google',
@@ -106,18 +102,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SnackBar(content: Text('Facebook login clicked')),
                     ),
                   ),
-
                   const SizedBox(height: 24),
                   const OrDivider(),
                   const SizedBox(height: 24),
-
                   CustomTextField(
                     controller: _emailController,
                     label: 'Email',
                   ),
-
                   const SizedBox(height: 16),
-
                   CustomTextField(
                     controller: _passwordController,
                     label: 'Password',
@@ -128,33 +120,26 @@ class _LoginScreenState extends State<LoginScreen> {
                       });
                     },
                   ),
-
                   const SizedBox(height: 12),
-
                   ForgotPasswordLink(
                     onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Forgot password clicked')),
                     ),
                   ),
-
                   const SizedBox(height: 24),
-
                   SignInButton(
                     label: 'Sign In →',
                     isLoading: isLoading,
                     onPressed: () => context.read<AuthCubit>().login(
-                          _emailController.text.trim(),
-                          _passwordController.text.trim(),
-                        ),
+                      _emailController.text.trim(),
+                      _passwordController.text.trim(),
+                    ),
                   ),
-
                   const SizedBox(height: 24),
-
                   AuthSwitchText(
                     isLogin: true,
                     onPressed: () => context.pushReplacement(RoutePaths.signup),
                   ),
-
                   const SizedBox(height: 20),
                 ],
               ),

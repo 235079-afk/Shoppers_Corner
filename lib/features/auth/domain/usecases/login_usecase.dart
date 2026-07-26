@@ -1,3 +1,6 @@
+import 'package:flutter_app/core/error/failures.dart';
+import 'package:fpdart/fpdart.dart';
+
 import '../entities/user.dart';
 import '../repositories/auth_repository.dart';
 
@@ -6,11 +9,7 @@ class LoginUseCase {
 
   LoginUseCase(this.repository);
 
-  Future<User> call(String email, String password) async {
-    try {
-      return await repository.login(email, password);
-    } catch (e) {
-      throw Exception('Login failed: $e');
-    }
+  Future<Either<Failure, User>> call(String email, String password) async {
+    return await repository.login(email, password);
   }
 }
