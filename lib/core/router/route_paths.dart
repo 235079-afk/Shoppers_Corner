@@ -9,4 +9,6 @@ class RoutePaths {
   static const String productDetails = '/product-details';
   static const String productDetailsName = 'productDetails';
   static const String otp = '/otp';
+  static const String onboarding = '/onboarding';
+  static const String splash = '/splash';
 }

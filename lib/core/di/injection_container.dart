@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/domain/usecases/login_usecase.dart';
@@ -88,3 +87,21 @@ Future<void> initDependencies() async {
     () => ProductCubit(getIt(), getIt()),
   );
 }
+// abstract class InjectionHelper {
+//   static Future<void> injectExternal() async{
+//     final SharedPreferences = await SharedPreferences.getInstance();
+
+//     getIt.registerFactory<BaseLocalStorage>(
+//       () => SharedPrefsLocalStorageImpl(preferences: sharedPreferences),
+//     );
+//     getIt. registerSingletonWithDependencies<Dio>(Dio());
+//     getIt. registerSingletonWithDependencies<AppInterceptors>(
+//       AppInterceptors(
+
+
+//       ),
+//     );
+
+    
+//   }
+// }
