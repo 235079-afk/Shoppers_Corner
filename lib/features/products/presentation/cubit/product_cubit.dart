@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../domain/entities/product.dart';
 import '../../domain/usecases/get_product_details_usecase.dart';
 import '../../domain/usecases/get_products_usecase.dart';
 import 'product_state.dart';
@@ -22,13 +23,17 @@ class ProductCubit extends Cubit<ProductState> {
   }
 
   Future<void> fetchProductDetails(String id) async {
-    emit(const ProductDetailsLoading());
+    final currentProducts = state is ProductLoaded
+        ? (state as ProductLoaded).products
+        : const <Product>[];
+
+    emit(ProductDetailsLoading(currentProducts));
 
     final result = await _getProductDetailsUseCase(id);
 
     result.fold(
-      (failure) => emit(ProductDetailsError(failure.message)),
-      (product) => emit(ProductDetailsLoaded(product)),
+      (failure) => emit(ProductDetailsError(failure.message, currentProducts)),
+      (product) => emit(ProductDetailsLoaded(product, currentProducts)),
     );
   }
 }

@@ -7,5 +7,6 @@ class RoutePaths {
   static const String cart = '/cart';
   static const String settings = '/settings';
   static const String productDetails = '/product-details';
+  static const String productDetailsName = 'productDetails';
   static const String otp = '/otp';
 }

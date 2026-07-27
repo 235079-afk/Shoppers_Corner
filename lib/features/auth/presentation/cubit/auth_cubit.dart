@@ -1,4 +1,9 @@
+import 'dart:developer';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/constants/local_keys.dart';
+import '../../../../core/local_storage/base_local_storage.dart';
 import '../../domain/usecases/login_usecase.dart';
 import '../../domain/usecases/sign_up_usecase.dart';
 import '../../domain/usecases/verify_otp_usecase.dart';
@@ -8,9 +13,14 @@ class AuthCubit extends Cubit<AuthState> {
   final LoginUseCase _loginUseCase;
   final SignUpUseCase _signUpUseCase;
   final VerifyOtpUseCase _verifyOtpUseCase;
+  final BaseLocalStorage _localStorage;
 
-  AuthCubit(this._loginUseCase, this._signUpUseCase, this._verifyOtpUseCase)
-      : super(const AuthInitial());
+  AuthCubit(
+    this._loginUseCase,
+    this._signUpUseCase,
+    this._verifyOtpUseCase,
+    this._localStorage,
+  ) : super(const AuthInitial());
 
   Future<void> login(String email, String password) async {
     if (email.isEmpty || password.isEmpty) {
@@ -22,9 +32,15 @@ class AuthCubit extends Cubit<AuthState> {
 
     final result = await _loginUseCase(email, password);
 
-    result.fold(
-      (failure) => emit(AuthError(failure.message)),
-      (user) => emit(AuthSuccess(user.name)),
+    await result.fold(
+      (failure) async => emit(AuthError(failure.message)),
+      (user) async {
+        if (kDebugMode) {
+          log('Login token received, length: ${user.token.length}');
+        }
+        await _localStorage.setString(LocalKeys.accessToken, user.token);
+        emit(AuthSuccess(user.name));
+      },
     );
   }
 
@@ -68,7 +84,8 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 
-  void logout() {
+  Future<void> logout() async {
+    await _localStorage.clear();
     emit(const AuthInitial());
   }
 }

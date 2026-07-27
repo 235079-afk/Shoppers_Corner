@@ -22,16 +22,16 @@ class ProductError extends ProductState {
   const ProductError(this.message);
 }
 
-class ProductDetailsLoading extends ProductState {
-  const ProductDetailsLoading();
+class ProductDetailsLoading extends ProductLoaded {
+  const ProductDetailsLoading(super.products);
 }
 
-class ProductDetailsLoaded extends ProductState {
+class ProductDetailsLoaded extends ProductLoaded {
   final Product product;
-  const ProductDetailsLoaded(this.product);
+  const ProductDetailsLoaded(this.product, super.products);
 }
 
-class ProductDetailsError extends ProductState {
+class ProductDetailsError extends ProductLoaded {
   final String message;
-  const ProductDetailsError(this.message);
+  const ProductDetailsError(this.message, super.products);
 }
