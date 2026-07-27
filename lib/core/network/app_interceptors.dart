@@ -7,8 +7,7 @@ import '../constants/local_keys.dart';
 import '../local_storage/base_local_storage.dart';
 
 class AppInterceptors extends Interceptor {
-  AppInterceptors({required BaseLocalStorage localStorage})
-      : _localStorage = localStorage;
+  AppInterceptors({required this._localStorage});
 
   final BaseLocalStorage _localStorage;
 
