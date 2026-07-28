@@ -41,8 +41,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final authState = context.watch<AuthCubit>().state;
-    final name = authState is AuthSuccess ? authState.name : 'there';
-    final firstName = name.split(' ').first;
+    final name = authState is AuthSuccess ? authState.user : 'there';
+    //final firstName = name.split(' ').first;
 
     return Scaffold(
       appBar: AppBar(
@@ -69,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.all(24),
           children: [
             Text(
-              'Hello, $firstName 👋',
+              'Hello 👋',
               style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 4),

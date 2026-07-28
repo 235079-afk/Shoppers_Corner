@@ -36,10 +36,10 @@ class AuthCubit extends Cubit<AuthState> {
       (failure) async => emit(AuthError(failure.message)),
       (user) async {
         if (kDebugMode) {
-          log('Login token received, length: ${user.token.length}');
+          log('Login token received, length: ${user.accessToken.length}');
         }
-        await _localStorage.setString(LocalKeys.accessToken, user.token);
-        emit(AuthSuccess(user.name));
+        await _localStorage.setString(LocalKeys.accessToken, user.accessToken);
+        emit(AuthSuccess(user));
       },
     );
   }

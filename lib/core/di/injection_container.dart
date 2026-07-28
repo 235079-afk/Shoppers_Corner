@@ -36,14 +36,15 @@ Future<void> initDependencies() async {
   getIt.registerLazySingleton<BaseLocalStorage>(
     () => SharedPrefsLocalStorageImpl(preferences: sharedPreferences),
   );
-  getIt.registerLazySingleton<AppInterceptors>(
-    () => AppInterceptors(localStorage: getIt()),
-  );
+  getIt.registerSingleton<AppInterceptors>(AppInterceptors(localStorage: getIt<BaseLocalStorage>())) ; 
+
 
   getIt.registerLazySingleton<Dio>(
     () => DioClient.create(interceptors: [getIt<AppInterceptors>()]),
   );
-  getIt.registerLazySingleton<ApiConsumer>(() => DioConsumer(getIt()));
+  getIt.registerLazySingleton<ApiConsumer>(() => DioConsumer(getIt() , [
+    getIt<AppInterceptors>()
+  ]));
 
   getIt.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl());
   getIt.registerLazySingleton<LoginUseCase>(() => LoginUseCase(getIt()));
@@ -87,21 +88,3 @@ Future<void> initDependencies() async {
     () => ProductCubit(getIt(), getIt()),
   );
 }
-// abstract class InjectionHelper {
-//   static Future<void> injectExternal() async{
-//     final SharedPreferences = await SharedPreferences.getInstance();
-
-//     getIt.registerFactory<BaseLocalStorage>(
-//       () => SharedPrefsLocalStorageImpl(preferences: sharedPreferences),
-//     );
-//     getIt. registerSingletonWithDependencies<Dio>(Dio());
-//     getIt. registerSingletonWithDependencies<AppInterceptors>(
-//       AppInterceptors(
-
-
-//       ),
-//     );
-
-    
-//   }
-// }
