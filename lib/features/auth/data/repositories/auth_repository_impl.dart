@@ -5,13 +5,12 @@ import 'package:http/http.dart' as http;
 
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/auth_repository.dart';
-import '../models/user_model.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final String baseUrl = "https://accessories-eshop.runasp.net/api/auth";
 
   @override
-  Future<Either<Failure, User>> login(String email, String password) async {
+  Future<Either<Failure, AuthResponse>> login(String email, String password) async {
     final url = Uri.parse("$baseUrl/login");
 
     try {
@@ -22,7 +21,7 @@ class AuthRepositoryImpl implements AuthRepository {
       );
 
       if (response.statusCode == 200) {
-        final user = UserModel.fromJson(jsonDecode(response.body));
+        final user = AuthResponse.fromJson(jsonDecode(response.body));
         return right(user);
       } else {
         return left(ServerFailure("Login failed: ${response.body}"));

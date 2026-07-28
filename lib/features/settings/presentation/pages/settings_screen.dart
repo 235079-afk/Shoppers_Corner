@@ -15,7 +15,7 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authState = context.watch<AuthCubit>().state;
-    final name = authState is AuthSuccess ? authState.name : 'there';
+    final name = authState is AuthSuccess ? authState.user : 'there';
 
     return Scaffold(
       appBar: AppBar(

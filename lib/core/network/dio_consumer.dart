@@ -4,9 +4,12 @@ import '../error/failures.dart';
 import 'api_consumer.dart';
 
 class DioConsumer implements ApiConsumer {
-  final Dio _client;
+ 
 
-  DioConsumer(this._client);
+  DioConsumer(this._client, this.interceptor);
+
+    final Dio _client;
+  final List<Interceptor> interceptor ;
 
   @override
   Future<Either<Failure, dynamic>> get({

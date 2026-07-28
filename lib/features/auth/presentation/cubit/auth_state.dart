@@ -1,3 +1,5 @@
+import 'package:flutter_app/features/auth/domain/entities/user.dart';
+
 sealed class AuthState {
   const AuthState();
 }
@@ -11,8 +13,8 @@ class AuthLoading extends AuthState {
 }
 
 class AuthSuccess extends AuthState {
-  final String name;
-  const AuthSuccess(this.name);
+  final AuthResponse user;
+  const AuthSuccess(this.user);
 }
 
 class AuthError extends AuthState {
