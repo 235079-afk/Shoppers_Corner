@@ -40,8 +40,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = context.watch<AuthCubit>().state;
-    final name = authState is AuthSuccess ? authState.user : 'there';
+   // final authState = context.watch<AuthCubit>().state;
+  //  final name = authState is AuthSuccess ? authState.user : 'there';
     //final firstName = name.split(' ').first;
 
     return Scaffold(
