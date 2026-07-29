@@ -57,3 +57,4 @@ final BaseLocalStorage localStorage = getIt<BaseLocalStorage>();
     );
   }
 }
+

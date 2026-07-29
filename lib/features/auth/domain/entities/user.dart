@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-
 part 'user.freezed.dart';
 part 'user.g.dart';
 
@@ -31,4 +30,24 @@ abstract class User with _$User {
 
   factory User.fromJson(Map<String, dynamic> json) =>
       _$UserFromJson(json);
+      
+}
+class MeUser {
+  final String firstName;
+  final String lastName;
+  final String email;
+
+  MeUser({
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+  });
+
+  factory MeUser.fromJson(Map<String, dynamic> json) {
+    return MeUser(
+      firstName: json["firstName"] ?? "",
+      lastName: json["lastName"] ?? "",
+      email: json["email"] ?? "",
+    );
+  }
 }
