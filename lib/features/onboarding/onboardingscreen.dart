@@ -50,7 +50,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     //comment this too:
     await localStorage.setBool(LocalKeys.isOpen, true);
     if (!mounted) return;
-    context.go('/home');
+    context.go('/login');
   }
 
   @override

@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/router/route_paths.dart';
 import '../../../../core/widgets/theme_toggle_button.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
-import '../../../auth/presentation/cubit/auth_state.dart';
 import '../../../categories/domain/entities/category.dart';
 import '../../../categories/presentation/cubit/category_cubit.dart';
 import '../../../categories/presentation/cubit/category_state.dart';
@@ -40,8 +39,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = context.watch<AuthCubit>().state;
-    final name = authState is AuthSuccess ? authState.user : 'there';
+    //final authState = context.watch<AuthCubit>().state;
+    //final name = authState is AuthSuccess ? authState.user : 'there';
     //final firstName = name.split(' ').first;
 
     return Scaffold(
