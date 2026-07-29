@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_app/features/products/domain/entities/product.dart';
 
+import '../../../cart/presentation/cubit/cart_cubit.dart';
+import '../../../cart/presentation/cubit/cart_state.dart';
 import '../cubit/product_cubit.dart';
 import '../cubit/product_state.dart';
 
@@ -150,21 +152,66 @@ class _ProductDetailsBody extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 30),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(
+          BlocBuilder<CartCubit, CartState>(
+            builder: (context, state) {
+              final quantity =
+                  state is CartLoaded ? state.quantityOf(product.id) : 0;
+
+              if (quantity == 0) {
+                return SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () =>
+                        context.read<CartCubit>().addToCart(product),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue.shade700,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: const Text(
+                      "Add to Cart",
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                  ),
+                );
+              }
+
+              return Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.blue.shade700),
                   borderRadius: BorderRadius.circular(10),
                 ),
-              ),
-              child: const Text(
-                "Add to Cart",
-                style: TextStyle(fontSize: 16),
-              ),
-            ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    IconButton(
+                      onPressed: () => context
+                          .read<CartCubit>()
+                          .decrementQuantity(product.id),
+                      icon: Icon(Icons.remove, color: Colors.blue.shade700),
+                    ),
+                    Text(
+                      '$quantity in cart',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue.shade700,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () => context
+                          .read<CartCubit>()
+                          .incrementQuantity(product.id),
+                      icon: Icon(Icons.add, color: Colors.blue.shade700),
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
         ],
       ),

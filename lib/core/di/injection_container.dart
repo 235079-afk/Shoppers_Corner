@@ -8,6 +8,15 @@ import '../../features/auth/domain/usecases/login_usecase.dart';
 import '../../features/auth/domain/usecases/sign_up_usecase.dart';
 import '../../features/auth/domain/usecases/verify_otp_usecase.dart';
 import '../../features/auth/presentation/cubit/auth_cubit.dart';
+import '../../features/cart/data/datasources/cart_local_data_source.dart';
+import '../../features/cart/data/repositories/cart_repository_impl.dart';
+import '../../features/cart/domain/repositories/cart_repository.dart';
+import '../../features/cart/domain/usecases/add_to_cart_usecase.dart';
+import '../../features/cart/domain/usecases/clear_cart_usecase.dart';
+import '../../features/cart/domain/usecases/get_cart_items_usecase.dart';
+import '../../features/cart/domain/usecases/remove_from_cart_usecase.dart';
+import '../../features/cart/domain/usecases/update_cart_quantity_usecase.dart';
+import '../../features/cart/presentation/cubit/cart_cubit.dart';
 import '../../features/categories/data/datasources/category_remote_data_source.dart';
 import '../../features/categories/data/repositories/category_repository_impl.dart';
 import '../../features/categories/domain/repositories/category_repository.dart';
@@ -77,6 +86,31 @@ Future<void> initDependencies() async {
   );
   getIt.registerLazySingleton<CategoryCubit>(
     () => CategoryCubit(getIt()),
+  );
+
+  getIt.registerLazySingleton<CartLocalDataSource>(
+    () => CartLocalDataSourceImpl(getIt<BaseLocalStorage>()),
+  );
+  getIt.registerLazySingleton<CartRepository>(
+    () => CartRepositoryImpl(getIt()),
+  );
+  getIt.registerLazySingleton<GetCartItemsUseCase>(
+    () => GetCartItemsUseCase(getIt()),
+  );
+  getIt.registerLazySingleton<AddToCartUseCase>(
+    () => AddToCartUseCase(getIt()),
+  );
+  getIt.registerLazySingleton<RemoveFromCartUseCase>(
+    () => RemoveFromCartUseCase(getIt()),
+  );
+  getIt.registerLazySingleton<UpdateCartQuantityUseCase>(
+    () => UpdateCartQuantityUseCase(getIt()),
+  );
+  getIt.registerLazySingleton<ClearCartUseCase>(
+    () => ClearCartUseCase(getIt()),
+  );
+  getIt.registerLazySingleton<CartCubit>(
+    () => CartCubit(getIt(), getIt(), getIt(), getIt(), getIt()),
   );
 
   getIt.registerLazySingleton<ThemeCubit>(() => ThemeCubit());

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/router/route_paths.dart';
+import '../../../cart/presentation/cubit/cart_cubit.dart';
+import '../../../cart/presentation/cubit/cart_state.dart';
 import '../../domain/entities/product.dart';
 
 class ProductCard extends StatelessWidget {
@@ -82,6 +85,60 @@ class ProductCard extends StatelessWidget {
                     ),
                   ],
                 ),
+              ),
+              const SizedBox(width: 4),
+              BlocBuilder<CartCubit, CartState>(
+                builder: (context, state) {
+                  final quantity =
+                      state is CartLoaded ? state.quantityOf(product.id) : 0;
+
+                  if (quantity == 0) {
+                    return IconButton(
+                      tooltip: 'Add to cart',
+                      onPressed: () =>
+                          context.read<CartCubit>().addToCart(product),
+                      icon: Icon(
+                        Icons.add_shopping_cart,
+                        color: Colors.blue.shade700,
+                      ),
+                    );
+                  }
+
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      InkWell(
+                        borderRadius: BorderRadius.circular(6),
+                        onTap: () => context
+                            .read<CartCubit>()
+                            .incrementQuantity(product.id),
+                        child: Icon(
+                          Icons.add_circle,
+                          color: Colors.blue.shade700,
+                          size: 22,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Text(
+                          '$quantity',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      InkWell(
+                        borderRadius: BorderRadius.circular(6),
+                        onTap: () => context
+                            .read<CartCubit>()
+                            .decrementQuantity(product.id),
+                        child: Icon(
+                          Icons.remove_circle_outline,
+                          color: Colors.blue.shade700,
+                          size: 22,
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
             ],
           ),
